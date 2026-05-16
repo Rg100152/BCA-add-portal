@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BCA Admission Portal | Raj Gautam Institute of Technology</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#04060f;
+  --bg2:#080c1a;
+  --bg3:#0c1224;
+  --card:#0f1628;
+  --card2:#131c35;
+  --border:#1e2d55;
+  --border2:#2a3f70;
+  --accent:#6c63ff;
+  --accent2:#00d4ff;
+  --accent3:#ff4d9e;
+  --gold:#f5c542;
+  --text:#e8ecff;
+  --text2:#8899cc;
+  --text3:#4a5a8a;
+  --success:#00e5a0;
+  --error:#ff4d6a;
+  --warn:#ffb347;
+  --font-head:'Orbitron',sans-serif;
+  --font-body:'Rajdhani',sans-serif;
+  --font-form:'Inter',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+/* ─── NOISE OVERLAY ─── */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.4;
+}
+/* ─── ANIMATED BG ─── */
+.bg-anim{
+  position:fixed;inset:0;z-index:0;overflow:hidden;
+}
+.orb{
+  position:absolute;border-radius:50%;filter:blur(80px);opacity:.15;animation:drift 12s ease-in-out infinite alternate;
+}
+.orb1{width:500px;height:500px;background:var(--accent);top:-100px;left:-100px;animation-delay:0s}
+.orb2{width:400px;height:400px;background:var(--accent2);bottom:-80px;right:-80px;animation-delay:-4s}
+.orb3{width:300px;height:300px;background:var(--accent3);top:40%;left:40%;animation-delay:-8s}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,20px) scale(1.08)}}
+.grid-bg{
+  position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(108,99,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,.04) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+/* ─── PAGES ─── */
+.page{display:none;position:relative;z-index:1;min-height:100vh}
+.page.active{display:block}
+/* ─── SHARED CARD ─── */
+.auth-wrap{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;
+}
+.auth-card{
+  width:100%;max-width:440px;
+  background:linear-gradient(145deg,var(--card),var(--card2));
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:2.5rem 2rem;
+  box-shadow:0 0 60px rgba(108,99,255,.12),0 0 120px rgba(0,212,255,.05);
+  animation:cardIn .5s cubic-bezier(.22,1,.36,1);
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:none}}
+.brand{text-align:center;margin-bottom:2rem}
+.brand-logo{
+  width:60px;height:60px;border-radius:16px;margin:0 auto 1rem;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:22px;color:#fff;font-weight:800;
+  box-shadow:0 8px 24px rgba(108,99,255,.4);
+  animation:pulse 3s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 8px 24px rgba(108,99,255,.4)}50%{box-shadow:0 8px 40px rgba(108,99,255,.7),0 0 0 8px rgba(108,99,255,.08)}}
+.brand h1{font-family:var(--font-head);font-size:18px;letter-spacing:1px;color:var(--text);font-weight:600}
+.brand p{font-size:13px;color:var(--text2);margin-top:4px;font-family:var(--font-form)}
+/* ─── TABS ─── */
+.tabs{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:3px;gap:3px;margin-bottom:1.8rem}
+.tab-btn{
+  flex:1;padding:9px;border:none;background:transparent;
+  color:var(--text2);font-size:13px;font-weight:500;font-family:var(--font-form);
+  border-radius:8px;cursor:pointer;transition:all .25s;letter-spacing:.3px;
+}
+.tab-btn.active{background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;box-shadow:0 4px 12px rgba(108,99,255,.4)}
+/* ─── FORM ELEMENTS ─── */
+.fgroup{margin-bottom:1.1rem}
+.frow{display:flex;gap:12px}
+.frow .fgroup{flex:1}
+.fgroup label{
+  display:block;font-size:11.5px;color:var(--text2);margin-bottom:5px;
+  font-family:var(--font-form);font-weight:500;letter-spacing:.5px;text-transform:uppercase;
+}
+.fgroup input,.fgroup select,.fgroup textarea{
+  width:100%;padding:10px 13px;
+  border-radius:9px;border:1px solid var(--border);
+  background:var(--bg2);color:var(--text);
+  font-size:14px;font-family:var(--font-form);
+  outline:none;transition:all .25s;
+}
+.fgroup input:focus,.fgroup select:focus,.fgroup textarea:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(108,99,255,.15);
+}
+.fgroup input::placeholder,.fgroup textarea::placeholder{color:var(--text3);font-size:13px}
+.fgroup select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238899cc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.fgroup select option{background:var(--card);color:var(--text)}
+.fgroup textarea{resize:vertical;min-height:70px;line-height:1.5}
+.pass-wrap{position:relative}
+.pass-wrap input{padding-right:42px}
+.eye-btn{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;line-height:1;
+}
+/* ─── STRENGTH ─── */
+.strength-bars{display:flex;gap:4px;margin-top:6px}
+.sbar{flex:1;height:3px;border-radius:2px;background:var(--border);transition:all .3s}
+.sbar.w{background:var(--error)}
+.sbar.m{background:var(--warn)}
+.sbar.s{background:var(--success)}
+.slabel{font-size:11px;margin-top:3px;font-family:var(--font-form);transition:color .3s}
+/* ─── BUTTONS ─── */
+.btn{
+  width:100%;padding:12px;border:none;border-radius:10px;
+  font-size:14px;font-weight:600;font-family:var(--font-form);
+  cursor:pointer;transition:all .25s;letter-spacing:.5px;text-transform:uppercase;
+}
+.btn-primary{
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#fff;box-shadow:0 6px 20px rgba(108,99,255,.35);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(108,99,255,.5)}
+.btn-primary:active{transform:translateY(0)}
+.btn-outline{
+  background:transparent;border:1px solid var(--border2);color:var(--text2);
+}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-gold{
+  background:linear-gradient(90deg,var(--gold),#e8901a);color:#1a0f00;
+  box-shadow:0 6px 20px rgba(245,197,66,.3);
+}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(245,197,66,.45)}
+/* ─── ALERTS ─── */
+.alert{
+  display:none;padding:10px 13px;border-radius:8px;
+  font-size:13px;font-family:var(--font-form);margin-bottom:1rem;
+  border-left:3px solid;
+}
+.alert.show{display:block;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.alert.success{background:rgba(0,229,160,.1);border-color:var(--success);color:var(--success)}
+.alert.error{background:rgba(255,77,106,.1);border-color:var(--error);color:var(--error)}
+.alert.info{background:rgba(108,99,255,.1);border-color:var(--accent);color:#a099ff}
+/* ─── LINKS ─── */
+.link-row{text-align:center;font-size:13px;color:var(--text2);margin-top:1rem;font-family:var(--font-form)}
+.link{color:var(--accent2);cursor:pointer;font-weight:500}
+.link:hover{color:#fff}
+.check-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;font-family:var(--font-form)}
+.check-label{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer}
+.forgot{background:none;border:none;color:var(--accent2);font-size:12px;cursor:pointer;font-family:var(--font-form)}
+.forgot:hover{color:#fff}
+/* ─── DIVIDER ─── */
+.divider{text-align:center;font-size:11px;color:var(--text3);margin:1rem 0;font-family:var(--font-form);position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:44%;height:1px;background:var(--border)}
+.divider::before{left:0}.divider::after{right:0}
+/* ─── ADMISSION PORTAL ─── */
+.portal-header{
+  background:linear-gradient(90deg,var(--card),var(--card2));
+  border-bottom:1px solid var(--border);
+  padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);
+}
+.portal-brand{font-family:var(--font-head);font-size:16px;letter-spacing:1.5px;color:var(--text);display:flex;align-items:center;gap:12px}
+.portal-brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));animation:pulse 2s infinite}
+.user-badge{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:6px 14px;
+  font-size:13px;font-family:var(--font-form);color:var(--text2);cursor:pointer;
+  transition:border-color .2s;
+}
+.user-badge:hover{border-color:var(--accent)}
+.user-avatar{
+  width:30px;height:30px;border-radius:8px;
+  background:linear-gradient(135deg,var(--accent),var(--accent3));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:12px;color:#fff;font-weight:700;
+}
+/* ─── HERO ─── */
+.hero{
+  padding:3rem 2rem 2rem;text-align:center;max-width:800px;margin:0 auto;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.3);
+  border-radius:20px;padding:5px 14px;font-size:12px;color:var(--accent);
+  font-family:var(--font-form);margin-bottom:1.5rem;letter-spacing:.5px;
+}
+.hero-badge .dot2{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h2{font-family:var(--font-head);font-size:clamp(22px,4vw,36px);font-weight:800;line-height:1.2;margin-bottom:.8rem}
+.hero h2 span{
+  background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero p{color:var(--text2);font-size:15px;line-height:1.7;font-family:var(--font-form);max-width:550px;margin:0 auto 2rem}
+/* ─── STATS ─── */
+.stats-row{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin-bottom:2.5rem}
+.stat-box{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.5rem;text-align:center;min-width:110px;
+}
+.stat-box .num{font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--accent2)}
+.stat-box .lbl{font-size:11px;color:var(--text3);font-family:var(--font-form);margin-top:3px;letter-spacing:.5px;text-transform:uppercase}
+/* ─── STEPS ─── */
+.step-bar{
+  display:flex;align-items:center;justify-content:center;gap:0;
+  margin:0 auto 2.5rem;max-width:680px;padding:0 2rem;
+}
+.step{
+  display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;
+}
+.step-num{
+  width:34px;height:34px;border-radius:50%;border:2px solid var(--border2);
+  background:var(--bg2);display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:12px;color:var(--text3);font-weight:700;
+  transition:all .35s;position:relative;z-index:1;
+}
+.step.done .step-num{background:var(--success);border-color:var(--success);color:#fff}
+.step.active .step-num{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:var(--accent);color:#fff;
+  box-shadow:0 0 16px rgba(108,99,255,.5);
+}
+.step-label{font-size:10px;color:var(--text3);font-family:var(--font-form);letter-spacing:.3px;text-align:center;white-space:nowrap}
+.step.active .step-label{color:var(--accent)}
+.step.done .step-label{color:var(--success)}
+.step-line{flex:1;height:2px;background:var(--border);margin-top:-20px;transition:background .35s;max-width:60px}
+.step-line.done{background:var(--success)}
+/* ─── FORM SECTIONS ─── */
+.form-section{display:none;animation:slideIn .4s cubic-bezier(.22,1,.36,1)}
+.form-section.active{display:block}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.section-card{
+  background:var(--card);border:1px solid var(--border);border-radius:18px;
+  padding:2rem;margin:0 auto;max-width:780px;
+}
+.section-title{
+  font-family:var(--font-head);font-size:15px;letter-spacing:1px;color:var(--text);
+  margin-bottom:6px;display:flex;align-items:center;gap:10px;
+}
+.section-title::before{content:'';width:4px;height:20px;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:2px}
+.section-sub{font-size:13px;color:var(--text2);margin-bottom:1.8rem;font-family:var(--font-form)}
+/* ─── NAV BTNS ─── */
+.nav-btns{display:flex;gap:12px;margin-top:2rem;justify-content:flex-end;max-width:780px;margin-left:auto;margin-right:auto}
+.nav-btns .btn{width:auto;padding:11px 28px}
+/* ─── REVIEW ─── */
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.review-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px}
+.review-item .r-label{font-size:10px;color:var(--text3);font-family:var(--font-form);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px}
+.review-item .r-val{font-size:14px;color:var(--text);font-family:var(--font-form);font-weight:500}
+/* ─── SUCCESS ─── */
+.success-panel{text-align:center;padding:3rem 2rem;max-width:520px;margin:0 auto}
+.success-icon{
+  width:80px;height:80px;border-radius:50%;margin:0 auto 1.5rem;
+  background:linear-gradient(135deg,var(--success),#00b37e);
+  display:flex;align-items:center;justify-content:center;font-size:36px;
+  box-shadow:0 0 40px rgba(0,229,160,.35);animation:successPop .6s cubic-bezier(.22,1,.36,1);
+}
+@keyframes successPop{from{transform:scale(0)}to{transform:scale(1)}}
+.success-panel h2{font-family:var(--font-head);font-size:22px;margin-bottom:.8rem;color:var(--success)}
+.success-panel p{font-size:14px;color:var(--text2);line-height:1.7;font-family:var(--font-form);margin-bottom:1.5rem}
+.app-id{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:1rem;font-family:var(--font-head);font-size:13px;color:var(--accent2);
+  letter-spacing:2px;margin-bottom:1.5rem;
+}
+/* ─── REQUIRED ─── */
+.req{color:var(--accent3);margin-left:2px}
+/* ─── RESPONSIVE ─── */
+@media(max-width:560px){
+  .auth-card{padding:1.8rem 1.4rem}
+  .frow{flex-direction:column;gap:0}
+  .review-grid{grid-template-columns:1fr}
+  .step-label{display:none}
+  .stats-row{gap:1rem}
+  .nav-btns{flex-direction:column-reverse}
+  .nav-btns .btn{width:100%}
+}
+/* ─── FILE INPUT ─── */
+.file-box{
+  border:2px dashed var(--border2);border-radius:10px;padding:1.5rem;text-align:center;
+  cursor:pointer;transition:border-color .2s;font-family:var(--font-form);
+}
+.file-box:hover{border-color:var(--accent)}
+.file-box input{display:none}
+.file-box .icon{font-size:28px;margin-bottom:6px}
+.file-box p{font-size:13px;color:var(--text2)}
+.file-box small{font-size:11px;color:var(--text3)}
+/* ─── RADIO GROUP ─── */
+.radio-group{display:flex;gap:8px;flex-wrap:wrap}
+.radio-opt{
+  flex:1;min-width:120px;padding:10px;border-radius:9px;border:1px solid var(--border);
+  background:var(--bg2);cursor:pointer;transition:all .2s;text-align:center;
+  font-size:13px;font-family:var(--font-form);color:var(--text2);
+}
+.radio-opt input{display:none}
+.radio-opt.selected{border-color:var(--accent);background:rgba(108,99,255,.1);color:var(--accent)}
+/* ─── SECTION WRAPPER ─── */
+.admission-body{padding:0 1.5rem 4rem;position:relative;z-index:1}
+</style>
+</head>
+<body>
+
+<!-- ANIMATED BACKGROUND -->
+<div class="bg-anim">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+<div class="grid-bg"></div>
+
+<!-- ════════════════════════════════════════
+     PAGE 1: AUTH (SIGNUP / LOGIN)
+════════════════════════════════════════ -->
+<div class="page active" id="page-auth">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="brand">
+        <div class="brand-logo">RG</div>
+        <h1>RGIT PORTAL</h1>
+        <p>Raj Gautam Institute of Technology</p>
+      </div>
+
+      <div class="tabs" id="auth-tabs">
+        <button class="tab-btn active" onclick="switchAuth('signup')">Create Account</button>
+        <button class="tab-btn" onclick="switchAuth('login')">Sign In</button>
+      </div>
+
+      <div id="auth-alert" class="alert"></div>
+
+      <!-- SIGNUP -->
+      <div id="auth-signup">
+        <div class="frow">
+          <div class="fgroup">
+            <label>First Name<span class="req">*</span></label>
+            <input id="s-fn" type="text" placeholder="Raj"/>
+          </div>
+          <div class="fgroup">
+            <label>Last Name<span class="req">*</span></label>
+            <input id="s-ln" type="text" placeholder="Gautam"/>
+          </div>
+        </div>
+        <div class="fgroup">
+          <label>Email Address<span class="req">*</span></label>
+          <input id="s-email" type="email" placeholder="raj@example.com"/>
+        </div>
+        <div class="fgroup">
+          <label>Mobile Number<span class="req">*</span></label>
+          <input id="s-mob" type="tel" placeholder="10-digit mobile number" maxlength="10"/>
+        </div>
+        <div class="fgroup">
+          <label>Create Password<span class="req">*</span></label>
+          <div class="pass-wrap">
+            <input id="s-pw" type="password" placeholder="Min. 8 characters" oninput="pwStrength(this.value)"/>
+            <button class="eye-btn" type="button" onclick="toggleEye('s-pw',this)">👁</button>
+          </div>
+          <div class="strength-bars" id="s-bars">
+            <div class="sbar" id="b1"></div><div class="sbar" id="b2"></div><div class="sbar" id="b3"></div><div class="sbar" id="b4"></div>
+          </div>
+          <div class="slabel" id="s-slabel" style="color:var(--text3)">Enter password</div>
+        </div>
+        <div class="fgroup">
+          <label>Confirm Password<span class="req">*</span></label>
+          <div class="pass-wrap">
+            <input id="s-cpw" type="password" placeholder="Repeat password"/>
+            <button class="eye-btn" type="button" onclick="toggleEye('s-cpw',this)">👁</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="doSignup()">Create Account &rarr;</button>
+        <div class="link-row">Already registered? <span class="link" onclick="switchAuth('login')">Sign in here</span></div>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="auth-login" style="display:none">
+        <div class="fgroup">
+          <label>Email or Mobile<span class="req">*</span></label>
+          <input id="l-id" type="text" placeholder="raj@example.com or 9876543210"/>
+        </div>
+        <div class="fgroup">
+          <label>Password<span class="req">*</span></label>
+          <div class="pass-wrap">
+            <input id="l-pw" type="password" placeholder="Your password"/>
+            <button class="eye-btn" type="button" onclick="toggleEye('l-pw',this)">👁</button>
+          </div>
+        </div>
+        <div class="check-row">
+          <label class="check-label">
+            <input type="checkbox" id="l-rem"/> Remember me
+          </label>
+          <button class="forgot" onclick="switchAuth('forgot')">Forgot Password?</button>
+        </div>
+        <button class="btn btn-primary" onclick="doLogin()">Sign In &rarr;</button>
+        <div class="link-row">New applicant? <span class="link" onclick="switchAuth('signup')">Create account</span></div>
+      </div>
+
+      <!-- FORGOT -->
+      <div id="auth-forgot" style="display:none">
+        <div class="alert show info" id="forgot-info">Enter your registered email to receive a reset link.</div>
+        <div class="fgroup">
+          <label>Registered Email<span class="req">*</span></label>
+          <input id="f-email" type="email" placeholder="raj@example.com"/>
+        </div>
+        <button class="btn btn-primary" onclick="doForgot()">Send Reset Link</button>
+        <div class="link-row"><span class="link" onclick="switchAuth('login')">&larr; Back to Sign In</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PAGE 2: ADMISSION PORTAL
+════════════════════════════════════════ -->
+<div class="page" id="page-portal">
+
+  <!-- HEADER -->
+  <div class="portal-header">
+    <div class="portal-brand">
+      <div class="dot"></div>
+      RGIT · BCA ADMISSION 2025–26
+    </div>
+    <div class="user-badge" onclick="logout()">
+      <div class="user-avatar" id="hdr-avatar">RG</div>
+      <span id="hdr-name">Raj Gautam</span>
+      &nbsp;·&nbsp;
+      <span style="color:var(--accent3);font-size:12px">Logout</span>
+    </div>
+  </div>
+
+  <div class="admission-body">
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-badge"><span class="dot2"></span> Admissions Open 2025–26</div>
+      <h2>Apply for <span>BCA Programme</span></h2>
+      <p>Bachelor of Computer Applications · 3-Year Full-Time Degree · NAAC A+ Accredited</p>
+      <div class="stats-row">
+        <div class="stat-box"><div class="num">300</div><div class="lbl">Seats</div></div>
+        <div class="stat-box"><div class="num">₹45K</div><div class="lbl">Tuition/Year</div></div>
+        <div class="stat-box"><div class="num">98%</div><div class="lbl">Placement</div></div>
+        <div class="stat-box"><div class="num">2025</div><div class="lbl">Batch</div></div>
+      </div>
+    </div>
+
+    <!-- SUCCESS PANEL -->
+    <div id="success-panel" style="display:none">
+      <div class="success-panel">
+        <div class="success-icon">✓</div>
+        <h2>Application Submitted!</h2>
+        <p>Your BCA admission application has been received. Our admissions team will review and contact you within 3–5 working days.</p>
+        <div class="app-id" id="app-id-display">APP-RGIT-2025-XXXXXX</div>
+        <p style="font-size:12px;color:var(--text3);font-family:var(--font-form);margin-bottom:1.5rem">Save this Application ID for future reference.</p>
+        <button class="btn btn-outline" style="max-width:240px;margin:0 auto" onclick="resetForm()">Apply Again</button>
+      </div>
+    </div>
+
+    <!-- STEP BAR -->
+    <div id="step-bar-wrap">
+      <div class="step-bar" id="step-bar">
+        <div class="step active" id="step-dot-1"><div class="step-num">1</div><div class="step-label">Personal</div></div>
+        <div class="step-line" id="line-1-2"></div>
+        <div class="step" id="step-dot-2"><div class="step-num">2</div><div class="step-label">Academic</div></div>
+        <div class="step-line" id="line-2-3"></div>
+        <div class="step" id="step-dot-3"><div class="step-num">3</div><div class="step-label">Category</div></div>
+        <div class="step-line" id="line-3-4"></div>
+        <div class="step" id="step-dot-4"><div class="step-num">4</div><div class="step-label">Documents</div></div>
+        <div class="step-line" id="line-4-5"></div>
+        <div class="step" id="step-dot-5"><div class="step-num">5</div><div class="step-label">Review</div></div>
+      </div>
+    </div>
+
+    <div id="adm-alert" class="alert" style="max-width:780px;margin:0 auto 1rem"></div>
+
+    <!-- ── SECTION 1: PERSONAL DETAILS ── -->
+    <div class="form-section active" id="sec-1">
+      <div class="section-card">
+        <div class="section-title">Personal Information</div>
+        <div class="section-sub">Enter your personal details exactly as they appear on official documents.</div>
+
+        <div class="frow">
+          <div class="fgroup" style="flex:.4">
+            <label>Salutation</label>
+            <select id="p-sal">
+              <option value="">Select</option>
+              <option>Mr.</option><option>Ms.</option><option>Mrs.</option><option>Dr.</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label>First Name<span class="req">*</span></label>
+            <input id="p-fn" type="text" placeholder="First name"/>
+          </div>
+          <div class="fgroup">
+            <label>Middle Name</label>
+            <input id="p-mn" type="text" placeholder="Middle name"/>
+          </div>
+          <div class="fgroup">
+            <label>Last Name<span class="req">*</span></label>
+            <input id="p-ln" type="text" placeholder="Last name"/>
+          </div>
+        </div>
+
+        <div class="frow">
+          <div class="fgroup">
+            <label>Date of Birth<span class="req">*</span></label>
+            <input id="p-dob" type="date"/>
+          </div>
+          <div class="fgroup">
+            <label>Gender<span class="req">*</span></label>
+            <select id="p-gen">
+              <option value="">Select gender</option>
+              <option>Male</option><option>Female</option><option>Transgender</option><option>Prefer not to say</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label>Nationality<span class="req">*</span></label>
+            <select id="p-nat">
+              <option value="">Select</option>
+              <option selected>Indian</option><option>NRI</option><option>Foreign National</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="frow">
+          <div class="fgroup">
+            <label>Aadhaar Number<span class="req">*</span></label>
+            <input id="p-aadhar" type="text" placeholder="XXXX XXXX XXXX" maxlength="14"/>
+          </div>
+          <div class="fgroup">
+            <label>Mobile Number<span class="req">*</span></label>
+            <input id="p-mob" type="tel" placeholder="10-digit number" maxlength="10"/>
+          </div>
+          <div class="fgroup">
+            <label>Alternate Mobile</label>
+            <input id="p-amob" type="tel" placeholder="Optional" maxlength="10"/>
+          </div>
+        </div>
+
+        <div class="frow">
+          <div class="fgroup">
+            <label>Email Address<span class="req">*</span></label>
+            <input id="p-email" type="email" placeholder="your@email.com"/>
+          </div>
+          <div class="fgroup">
+            <label>Religion</label>
+            <select id="p-rel">
+              <option value="">Select</option>
+              <option>Hindu</option><option>Muslim</option><option>Christian</option><option>Sikh</option><option>Buddhist</option><option>Jain</option><option>Other</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label>Blood Group</label>
+            <select id="p-bg">
+              <option value="">Select</option>
+              <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+              <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fgroup">
+          <label>Permanent Address<span class="req">*</span></label>
+          <textarea id="p-addr" placeholder="House/Flat No., Street, Locality, District, State, PIN"></textarea>
+        </div>
+
+        <div class="frow">
+          <div class="fgroup">
+            <label>City<span class="req">*</span></label>
+            <input id="p-city" type="text" placeholder="City"/>
+          </div>
+          <div class="fgroup">
+            <label>State<span class="req">*</span></label>
+            <select id="p-state">
+              <option value="">Select state</option>
+              <option>Uttar Pradesh</option><option>Delhi</option><option>Maharashtra</option><option>Rajasthan</option><option>Bihar</option><option>Madhya Pradesh</option><option>Haryana</option><option>Gujarat</option><option>West Bengal</option><option>Other</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label>PIN Code<span class="req">*</span></label>
+            <input id="p-pin" type="text" placeholder="6-digit PIN" maxlength="6"/>
+          </div>
+        </div>
+
+        <div class="fgroup">
+          <label>Father's Name<span class="req">*</span></label>
+          <input id="p-dad" type="text" placeholder="Father's full name"/>
+        </div>
+        <div class="frow">
+          <div class="fgroup">
+            <label>Father's Occupation</label>
+            <input id="p-docc" type="text" placeholder="Occupation"/>
+          </div>
+          <div class="fgroup">
+            <label>Father's Mobile</label>
+            <input id="p-dmob" type="tel" placeholder="Mobile" maxlength="10"/>
+          </div>
+        </div>
+        <div class="fgroup">
+          <label>Mother's Name<span class="req">*</span></label>
+          <input id="p-mom" type="text" placeholder="Mother's full name"/>
+        </div>
+        <div class="frow">
+          <div class="fgroup">
+            <label>Annual Family Income</label>
+            <select id="p-inc">
+              <option value="">Select range</option>
+              <option>Below ₹1 Lakh</option><option>₹1–3 Lakh</option><option>₹3–5 Lakh</option><option>₹5–10 Lakh</option><option>Above ₹10 Lakh</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label>Domicile State</label>
+            <select id="p-dom">
+              <option value="">Select</option>
+              <option selected>Uttar Pradesh</option><option>Delhi</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="btn btn-primary" onclick="goStep(2)">Next: Academic Details &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ── SECTION 2: ACADEMIC DETAILS ── -->
+    <div class="form-section" id="sec-2">
+      <div class="section-card">
+        <div class="section-title">Academic Qualifications</div>
+        <div class="section-sub">Provide details of your Class 10, Class 12, and any other qualifying examinations.</div>
+
+        <div class="section-title" style="font-size:13px;margin-bottom:.8rem">Class X (Secondary)</div>
+        <div class="frow">
+          <div class="fgroup">
+            <label>School Name<span class="req">*</span></label>
+            <input id="a-10school" type="text" placeholder="Name of school"/>
+          </div>
+          <div class="fgroup">
+            <label>Board<span class="req">*</span></label>
+            <select id="a-10board">
+              <option value="">Select board</option>
+              <option>CBSE</option><option>UP Board</option><option>ICSE</option><option>State Board</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="fgroup">
+            <label>Passing Year<span class="req">*</span></label>
+            <input id="a-10yr" type="number" placeholder="e.g. 2022" min="2000" max="2025"/>
+          </div>
+          <div class="fgroup">
+            <label>Max Marks</label>
+            <input id="a-10max" type="number" placeholder="e.g. 500"/>
+          </div>
+          <div class="fgroup">
+            <label>Marks Obtained<span class="req">*</span></label>
+            <input id="a-10obt" type="number" placeholder="e.g. 425"/>
+          </div>
+          <div class="fgroup">
+            <label>Percentage / CGPA</label>
+            <input id="a-10pct" type="text" placeholder="e.g. 85%"/>
+          </div>
+        </div>
+
+        <div style="height:1px;background:var(--border);margin:1.5rem 0"></div>
+
+        <div class="section-title" style="font-size:13px;margin-bottom:.8rem">Class XII (Higher Secondary)</div>
+        <div class="frow">
+          <div class="fgroup">
+            <label>School / College Name<span class="req">*</span></label>
+            <input id="a-12school" type="text" placeholder="Name of institution"/>
+          </div>
+          <div class="fgroup">
+            <label>Board<span class="req">*</span></label>
+            <select id="a-12board">
+              <option value="">Select board</option>
+              <option>CBSE</option><option>UP Board</option><option>ICSE</option><option>State Board</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="fgroup">
+            <label>Stream<span class="req">*</span></label>
+            <select id="a-12stream">
+              <option value="">Select stream</option>
+              <option>Science (PCM)</option><option>Science (PCB)</option><option>Commerce</option><option>Arts / Humanities</option><option>Vocational</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label>Passing Year<span class="req">*</span></label>
+            <input id="a-12yr" type="number" placeholder="e.g. 2024" min="2000" max="2025"/>
+          </div>
+        </div>
+        <div class="frow">
+          <div class="fgroup">
+            <label>Max Marks</label>
+            <input id="a-12max" type="number" placeholder="e.g. 500"/>
+          </div>
+          <div class="fgroup">
+            <label>Marks Obtained<span class="req">*</span></label>
+            <input id="a-12obt" type="number" placeholder="e.g. 440"/>
+          </div>
+          <div class="fgroup">
+            <label>Percentage / CGPA<span class="req">*</span></label>
+            <input id="a-12pct" type="text" placeholder="e.g. 88%"/>
+          </div>
+        </div>
+
+        <div style="height:1px;background:var(--border);margin:1.5rem 0"></div>
+
+        <div class="section-title" style="font-size:13px;margin-bottom:.8rem">Entrance Examination (if applicable)</div>
+        <div class="frow">
+          <div class="fgroup">
+            <label>Exam Name</label>
+            <select id="a-ent">
+              <option value="">Not applicable</option>
+              <option>CET UP</option><option>CUET</option><option>JEE Main</option><option>State CET</option><option>Other</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label>Roll Number</label>
+            <input id="a-entroll" type="text" placeholder="Exam roll number"/>
+          </div>
+          <div class="fgroup">
+            <label>Score / Rank</label>
+            <input id="a-entscore" type="text" placeholder="Score or rank obtained"/>
+          </div>
+        </div>
+
+        <div class="fgroup" style="margin-top:.5rem">
+          <label>Do you have any gap year? If yes, reason:</label>
+          <input id="a-gap" type="text" placeholder="e.g. Health reasons, preparation, etc. (leave blank if no gap)"/>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goStep(1)">&larr; Back</button>
+        <button class="btn btn-primary" onclick="goStep(3)">Next: Category & Preferences &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ── SECTION 3: CATEGORY & PREFERENCES ── -->
+    <div class="form-section" id="sec-3">
+      <div class="section-card">
+        <div class="section-title">Category & Admission Preferences</div>
+        <div class="section-sub">Select your reservation category and programme preferences for merit-based allotment.</div>
+
+        <div class="frow">
+          <div class="fgroup">
+            <label>Reservation Category<span class="req">*</span></label>
+            <select id="c-cat">
+              <option value="">Select category</option>
+              <option>General (UR)</option><option>OBC</option><option>SC</option><option>ST</option><option>EWS</option><option>PwD</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label>Sub-Category (if any)</label>
+            <select id="c-subcat">
+              <option value="">None</option><option>OBC-NCL</option><option>SC (Kashmiri Migrant)</option><option>Ex-Servicemen Ward</option><option>Sports Quota</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fgroup">
+          <label>Specialisation Preference<span class="req">*</span></label>
+          <div class="radio-group" id="spec-group">
+            <div class="radio-opt" onclick="selectOpt(this,'spec')">
+              <input type="radio" name="spec" value="General BCA"/> General BCA
+            </div>
+            <div class="radio-opt" onclick="selectOpt(this,'spec')">
+              <input type="radio" name="spec" value="BCA (AI & ML)"/> BCA (AI & ML)
+            </div>
+            <div class="radio-opt" onclick="selectOpt(this,'spec')">
+              <input type="radio" name="spec" value="BCA (Cloud Computing)"/> BCA (Cloud)
+            </div>
+            <div class="radio-opt" onclick="selectOpt(this,'spec')">
+              <input type="radio" name="spec" value="BCA (Cybersecurity)"/> BCA (Cyber)
+            </div>
+          </div>
+        </div>
+
+        <div class="fgroup">
+          <label>Hostel Requirement</label>
+          <div class="radio-group" id="hostel-group">
+            <div class="radio-opt" onclick="selectOpt(this,'hostel')"><input type="radio" name="hostel" value="Yes"/> Yes, required</div>
+            <div class="radio-opt" onclick="selectOpt(this,'hostel')"><input type="radio" name="hostel" value="No"/> No, day scholar</div>
+          </div>
+        </div>
+
+        <div class="frow">
+          <div class="fgroup">
+            <label>How did you hear about us?</label>
+            <select id="c-src">
+              <option value="">Select source</option>
+              <option>Social Media</option><option>Newspaper</option><option>Friend / Family</option><option>School Teacher</option><option>Education Fair</option><option>Online Search</option><option>Other</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label>Scholarship Applying For</label>
+            <select id="c-schol">
+              <option value="">None</option>
+              <option>Merit Scholarship</option><option>State Government</option><option>Central Govt (NSP)</option><option>Minority Scholarship</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fgroup">
+          <label>Extra-Curricular Achievements (optional)</label>
+          <textarea id="c-extra" placeholder="Sports, cultural, NCC, NSS, competitions, awards etc."></textarea>
+        </div>
+
+        <div class="fgroup">
+          <label>Statement of Purpose (SOP) — optional</label>
+          <textarea id="c-sop" style="min-height:100px" placeholder="Why do you want to pursue BCA? What are your career goals? (Max 300 words)"></textarea>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goStep(2)">&larr; Back</button>
+        <button class="btn btn-primary" onclick="goStep(4)">Next: Upload Documents &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ── SECTION 4: DOCUMENTS ── -->
+    <div class="form-section" id="sec-4">
+      <div class="section-card">
+        <div class="section-title">Document Upload</div>
+        <div class="section-sub">Upload scanned copies. Accepted formats: JPG, PNG, PDF. Max size: 500KB each.</div>
+
+        <div class="frow" style="gap:16px">
+          <div class="fgroup">
+            <label>Passport Size Photo<span class="req">*</span></label>
+            <div class="file-box" onclick="this.querySelector('input').click()">
+              <input type="file" accept="image/*" onchange="fileChosen(this,'d-photo-lbl')"/>
+              <div class="icon">📸</div>
+              <p id="d-photo-lbl">Click to upload photo</p>
+              <small>JPG/PNG · Max 200KB</small>
+            </div>
+          </div>
+          <div class="fgroup">
+            <label>Signature<span class="req">*</span></label>
+            <div class="file-box" onclick="this.querySelector('input').click()">
+              <input type="file" accept="image/*" onchange="fileChosen(this,'d-sign-lbl')"/>
+              <div class="icon">✍️</div>
+              <p id="d-sign-lbl">Click to upload signature</p>
+              <small>JPG/PNG · Max 100KB</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="frow" style="gap:16px;margin-top:.5rem">
+          <div class="fgroup">
+            <label>Class X Marksheet<span class="req">*</span></label>
+            <div class="file-box" onclick="this.querySelector('input').click()">
+              <input type="file" accept="image/*,application/pdf" onchange="fileChosen(this,'d-10-lbl')"/>
+              <div class="icon">📄</div>
+              <p id="d-10-lbl">Class X marksheet</p>
+              <small>PDF/JPG · Max 500KB</small>
+            </div>
+          </div>
+          <div class="fgroup">
+            <label>Class XII Marksheet<span class="req">*</span></label>
+            <div class="file-box" onclick="this.querySelector('input').click()">
+              <input type="file" accept="image/*,application/pdf" onchange="fileChosen(this,'d-12-lbl')"/>
+              <div class="icon">📄</div>
+              <p id="d-12-lbl">Class XII marksheet</p>
+              <small>PDF/JPG · Max 500KB</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="frow" style="gap:16px;margin-top:.5rem">
+          <div class="fgroup">
+            <label>Aadhaar Card<span class="req">*</span></label>
+            <div class="file-box" onclick="this.querySelector('input').click()">
+              <input type="file" accept="image/*,application/pdf" onchange="fileChosen(this,'d-aadhar-lbl')"/>
+              <div class="icon">🪪</div>
+              <p id="d-aadhar-lbl">Aadhaar card (front)</p>
+              <small>PDF/JPG · Max 500KB</small>
+            </div>
+          </div>
+          <div class="fgroup">
+            <label>Category Certificate (if applicable)</label>
+            <div class="file-box" onclick="this.querySelector('input').click()">
+              <input type="file" accept="image/*,application/pdf" onchange="fileChosen(this,'d-cat-lbl')"/>
+              <div class="icon">📋</div>
+              <p id="d-cat-lbl">OBC/SC/ST/EWS certificate</p>
+              <small>PDF/JPG · Max 500KB</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="frow" style="gap:16px;margin-top:.5rem">
+          <div class="fgroup">
+            <label>Transfer Certificate (TC)</label>
+            <div class="file-box" onclick="this.querySelector('input').click()">
+              <input type="file" accept="image/*,application/pdf" onchange="fileChosen(this,'d-tc-lbl')"/>
+              <div class="icon">📑</div>
+              <p id="d-tc-lbl">Transfer certificate</p>
+              <small>PDF/JPG · Max 500KB</small>
+            </div>
+          </div>
+          <div class="fgroup">
+            <label>Migration Certificate (if applicable)</label>
+            <div class="file-box" onclick="this.querySelector('input').click()">
+              <input type="file" accept="image/*,application/pdf" onchange="fileChosen(this,'d-mc-lbl')"/>
+              <div class="icon">📑</div>
+              <p id="d-mc-lbl">Migration certificate</p>
+              <small>PDF/JPG · Max 500KB</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="fgroup" style="margin-top:1.2rem;background:rgba(108,99,255,.07);border:1px solid rgba(108,99,255,.2);border-radius:10px;padding:1rem">
+          <label style="margin-bottom:8px;color:var(--accent)">Declaration</label>
+          <label class="check-label" style="font-size:13px;color:var(--text2);align-items:flex-start;gap:8px">
+            <input type="checkbox" id="d-decl" style="margin-top:3px;min-width:15px"/>
+            I hereby declare that all information furnished above is true, complete and correct to the best of my knowledge. I understand that any false information may result in cancellation of admission. I accept all rules and regulations of Raj Gautam Institute of Technology.
+          </label>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goStep(3)">&larr; Back</button>
+        <button class="btn btn-primary" onclick="goStep(5)">Review Application &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ── SECTION 5: REVIEW ── -->
+    <div class="form-section" id="sec-5">
+      <div class="section-card">
+        <div class="section-title">Review & Submit</div>
+        <div class="section-sub">Please review your information before final submission. Click any field to edit.</div>
+
+        <div style="margin-bottom:1.5rem">
+          <div style="font-size:12px;color:var(--accent);font-family:var(--font-form);letter-spacing:.5px;text-transform:uppercase;margin-bottom:.8rem">Personal Details</div>
+          <div class="review-grid" id="review-personal"></div>
+        </div>
+        <div style="margin-bottom:1.5rem">
+          <div style="font-size:12px;color:var(--accent2);font-family:var(--font-form);letter-spacing:.5px;text-transform:uppercase;margin-bottom:.8rem">Academic Details</div>
+          <div class="review-grid" id="review-academic"></div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--accent3);font-family:var(--font-form);letter-spacing:.5px;text-transform:uppercase;margin-bottom:.8rem">Category & Preferences</div>
+          <div class="review-grid" id="review-category"></div>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goStep(4)">&larr; Back</button>
+        <button class="btn btn-gold" onclick="submitApp()">Submit Application ✦</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ════════════ STATE ════════════ */
+var users = JSON.parse(localStorage.getItem('rgit_users')||'[]');
+var session = JSON.parse(localStorage.getItem('rgit_session')||'null');
+var currentStep = 1;
+var specVal = '';
+var hostelVal = '';
+
+/* ════════════ AUTH ════════════ */
+function showAlert(id,msg,type){
+  var el=document.getElementById(id);
+  el.textContent=msg;el.className='alert '+type+' show';
+  setTimeout(function(){el.className='alert'},4000);
+}
+
+function switchAuth(tab){
+  ['signup','login','forgot'].forEach(function(t){
+    var el=document.getElementById('auth-'+t);
+    if(el)el.style.display='none';
+  });
+  document.getElementById('auth-'+tab).style.display='';
+  document.getElementById('auth-alert').className='alert';
+  var btns=document.querySelectorAll('#auth-tabs .tab-btn');
+  btns[0].classList.toggle('active',tab==='signup');
+  btns[1].classList.toggle('active',tab==='login');
+}
+
+function toggleEye(id,btn){
+  var inp=document.getElementById(id);
+  inp.type=inp.type==='password'?'text':'password';
+  btn.textContent=inp.type==='password'?'👁':'🙈';
+}
+
+function pwStrength(pw){
+  var score=0;
+  if(pw.length>=8)score++;
+  if(/[A-Z]/.test(pw))score++;
+  if(/[0-9]/.test(pw))score++;
+  if(/[^A-Za-z0-9]/.test(pw))score++;
+  var bars=['b1','b2','b3','b4'];
+  bars.forEach(function(b,i){
+    var el=document.getElementById(b);
+    el.className='sbar';
+    if(i<score){el.classList.add(score<=1?'w':score<=3?'m':'s')}
+  });
+  var lbl=document.getElementById('s-slabel');
+  var labels=['','Weak — add uppercase & numbers','Medium — add symbols','Strong','Very Strong ✓'];
+  var colors=['var(--text3)','var(--error)','var(--warn)','var(--success)','var(--success)'];
+  lbl.textContent=labels[score]||'';lbl.style.color=colors[score]||'var(--text3)';
+}
+
+function doSignup(){
+  var fn=gv('s-fn'),ln=gv('s-ln'),em=gv('s-email').toLowerCase(),mob=gv('s-mob'),pw=gv('s-pw'),cpw=gv('s-cpw');
+  if(!fn||!ln||!em||!mob||!pw||!cpw){showAlert('auth-alert','Please fill all required fields.','error');return}
+  if(!/^[^@]+@[^@]+\.[^@]+$/.test(em)){showAlert('auth-alert','Enter a valid email address.','error');return}
+  if(!/^\d{10}$/.test(mob)){showAlert('auth-alert','Enter valid 10-digit mobile number.','error');return}
+  if(pw.length<8){showAlert('auth-alert','Password must be at least 8 characters.','error');return}
+  if(pw!==cpw){showAlert('auth-alert','Passwords do not match.','error');return}
+  if(users.find(function(u){return u.email===em})){showAlert('auth-alert','Email already registered. Please log in.','error');return}
+  var u={fn:fn,ln:ln,email:em,mob:mob,pw:pw};
+  users.push(u);saveUsers();
+  session=u;localStorage.setItem('rgit_session',JSON.stringify(u));
+  enterPortal(u);
+}
+
+function doLogin(){
+  var id=gv('l-id').toLowerCase(),pw=gv('l-pw');
+  if(!id||!pw){showAlert('auth-alert','Enter your credentials.','error');return}
+  var u=users.find(function(u){return(u.email===id||u.mob===id)&&u.pw===pw});
+  if(!u){showAlert('auth-alert','Invalid email/mobile or password.','error');return}
+  session=u;
+  if(document.getElementById('l-rem').checked)localStorage.setItem('rgit_session',JSON.stringify(u));
+  enterPortal(u);
+}
+
+function doForgot(){
+  var em=gv('f-email').toLowerCase();
+  if(!em){showAlert('auth-alert','Enter your registered email.','error');return}
+  var u=users.find(function(x){return x.email===em});
+  if(!u){showAlert('auth-alert','No account found with that email.','error');return}
+  showAlert('auth-alert','Reset link sent to '+em+'. (Demo: password is "'+u.pw+'" — check console)','success');
+  console.log('[RGIT Demo] Password for',em,':',u.pw);
+}
+
+function enterPortal(u){
+  document.getElementById('page-auth').classList.remove('active');
+  document.getElementById('page-portal').classList.add('active');
+  var init=(u.fn[0]+(u.ln[0]||'')).toUpperCase();
+  document.getElementById('hdr-avatar').textContent=init;
+  document.getElementById('hdr-name').textContent=u.fn+' '+u.ln;
+  prefillFromAccount(u);
+}
+
+function prefillFromAccount(u){
+  sv('p-fn',u.fn);sv('p-ln',u.ln);sv('p-email',u.email);sv('p-mob',u.mob);
+}
+
+function logout(){
+  session=null;localStorage.removeItem('rgit_session');
+  document.getElementById('page-portal').classList.remove('active');
+  document.getElementById('page-auth').classList.add('active');
+  currentStep=1;
+}
+
+function saveUsers(){localStorage.setItem('rgit_users',JSON.stringify(users))}
+function gv(id){return(document.getElementById(id)||{}).value||''}
+function sv(id,val){var el=document.getElementById(id);if(el&&!el.value)el.value=val}
+
+/* ════════════ STEP NAV ════════════ */
+function goStep(n){
+  document.getElementById('sec-'+currentStep).classList.remove('active');
+  // Update step dots
+  for(var i=1;i<=5;i++){
+    var d=document.getElementById('step-dot-'+i);
+    d.classList.remove('active','done');
+    if(i<n)d.classList.add('done');
+    if(i===n)d.classList.add('active');
+  }
+  for(var i=1;i<=4;i++){
+    var l=document.getElementById('line-'+i+'-'+(i+1));
+    l.classList.toggle('done',i<n);
+  }
+  if(n===5)buildReview();
+  currentStep=n;
+  document.getElementById('sec-'+n).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ════════════ RADIO ════════════ */
+function selectOpt(el,group){
+  document.querySelectorAll('#'+group+'-group .radio-opt').forEach(function(o){o.classList.remove('selected')});
+  if(group==='spec'){specVal=el.querySelector('input').value}
+  if(group==='hostel'){hostelVal=el.querySelector('input').value}
+  el.classList.add('selected');
+}
+
+/* ════════════ FILE ════════════ */
+function fileChosen(inp,lblId){
+  var f=inp.files[0];
+  if(f)document.getElementById(lblId).textContent='✓ '+f.name;
+}
+
+/* ════════════ REVIEW ════════════ */
+function buildReview(){
+  rv('review-personal',[
+    ['Full Name', gv('p-fn')+' '+gv('p-mn')+' '+gv('p-ln')],
+    ['Date of Birth', gv('p-dob')],
+    ['Gender', gv('p-gen')],
+    ['Mobile', gv('p-mob')],
+    ['Email', gv('p-email')],
+    ['Aadhaar', gv('p-aadhar')],
+    ['City / State', gv('p-city')+', '+gv('p-state')],
+    ['PIN Code', gv('p-pin')],
+    ["Father's Name", gv('p-dad')],
+    ["Mother's Name", gv('p-mom')],
+    ['Family Income', gv('p-inc')],
+    ['Domicile', gv('p-dom')],
+  ]);
+  rv('review-academic',[
+    ['Class X School', gv('a-10school')],
+    ['Class X Board', gv('a-10board')],
+    ['Class X Year', gv('a-10yr')],
+    ['Class X Marks', gv('a-10obt')+' / '+gv('a-10max')],
+    ['Class XII School', gv('a-12school')],
+    ['Class XII Board', gv('a-12board')],
+    ['Class XII Stream', gv('a-12stream')],
+    ['Class XII Year', gv('a-12yr')],
+    ['Class XII Marks', gv('a-12obt')+' / '+gv('a-12max')],
+    ['Class XII %', gv('a-12pct')],
+    ['Entrance Exam', gv('a-ent')||'N/A'],
+    ['Entrance Score', gv('a-entscore')||'N/A'],
+  ]);
+  rv('review-category',[
+    ['Category', gv('c-cat')],
+    ['Sub-Category', gv('c-subcat')||'None'],
+    ['Specialisation', specVal||'Not selected'],
+    ['Hostel', hostelVal||'Not indicated'],
+    ['Scholarship', gv('c-schol')||'None'],
+    ['Heard via', gv('c-src')||'—'],
+  ]);
+}
+
+function rv(id,rows){
+  var h=rows.map(function(r){
+    return '<div class="review-item"><div class="r-label">'+r[0]+'</div><div class="r-val">'+(r[1]||'—')+'</div></div>';
+  }).join('');
+  document.getElementById(id).innerHTML=h;
+}
+
+/* ════════════ SUBMIT ════════════ */
+function submitApp(){
+  if(!document.getElementById('d-decl').checked){
+    showAlert('adm-alert','Please read and accept the declaration before submitting.','error');
+    window.scrollTo({top:0,behavior:'smooth'});return;
+  }
+  var id='APP-RGIT-2025-'+Math.random().toString(36).substr(2,8).toUpperCase();
+  document.getElementById('app-id-display').textContent=id;
+  document.getElementById('step-bar-wrap').style.display='none';
+  document.querySelectorAll('.form-section').forEach(function(s){s.classList.remove('active')});
+  document.getElementById('success-panel').style.display='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function resetForm(){
+  document.getElementById('success-panel').style.display='none';
+  document.getElementById('step-bar-wrap').style.display='';
+  currentStep=1;
+  for(var i=1;i<=5;i++){
+    var d=document.getElementById('step-dot-'+i);
+    d.classList.remove('active','done');
+    if(i===1)d.classList.add('active');
+  }
+  for(var i=1;i<=4;i++)document.getElementById('line-'+i+'-'+(i+1)).classList.remove('done');
+  document.getElementById('sec-1').classList.add('active');
+}
+
+/* ════════════ AUTO-LOGIN ════════════ */
+if(session){
+  var live=users.find(function(u){return u.email===session.email});
+  if(live){session=live;enterPortal(live);}
+}
+</script>
+</body>
+</html>
